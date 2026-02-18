@@ -66,7 +66,7 @@ function Countdown({ endTime }) {
 
 // ── Bid Form ──────────────────────────────────────────────────────────────────
 
-function BidForm({ auction, reservePrice, minIncPct }) {
+function BidForm({ auction, reservePrice, minIncPct, onBidSuccess }) {
   const [amount, setAmount] = useState('')
   const [status, setStatus] = useState(null)
   const { writeContract, data: hash, isPending } = useWriteContract()
@@ -85,8 +85,22 @@ function BidForm({ auction, reservePrice, minIncPct }) {
   }, [minBidEth])
 
   useEffect(() => {
-    if (isSuccess) setStatus({ type: 'success', msg: '✓ Bid placed!' })
+    if (isSuccess) {
+      setStatus({ type: 'success', msg: '✓ Bid placed!' })
+      onBidSuccess?.()
+    }
   }, [isSuccess])
+
+  function friendlyError(e) {
+    const msg = e.shortMessage || e.message || ''
+    if (msg.toLowerCase().includes('connector not connected') || msg.toLowerCase().includes('not connected'))
+      return 'Connect a wallet to bid'
+    if (msg.toLowerCase().includes('user rejected') || msg.toLowerCase().includes('user denied'))
+      return 'Transaction cancelled'
+    if (msg.toLowerCase().includes('insufficient funds'))
+      return 'Insufficient funds in wallet'
+    return msg || 'Transaction failed'
+  }
 
   function bid() {
     if (!amount || parseFloat(amount) <= 0) return
@@ -97,11 +111,15 @@ function BidForm({ auction, reservePrice, minIncPct }) {
       functionName: 'createBid',
       value: parseEther(amount),
     }, {
-      onError: (e) => setStatus({ type: 'error', msg: e.shortMessage || e.message }),
+      onError: (e) => setStatus({ type: 'error', msg: friendlyError(e) }),
     })
   }
 
   if (ended) return null
+
+  const currentBidLabel = auction.amount === 0n
+    ? `Reserve: ${parseFloat(formatEther(reservePrice ?? 1000000000000000n)).toFixed(4)} ETH`
+    : `Current bid + 5%: ${minBidEth} ETH`
 
   return (
     <div className="bid-form">
@@ -122,7 +140,8 @@ function BidForm({ auction, reservePrice, minIncPct }) {
           {isPending || isConfirming ? 'Pending…' : 'Bid'}
         </button>
       </div>
-      <div className="bid-hint">Min bid: {minBidEth} ETH</div>
+      <div className="bid-hint">Min bid: {minBidEth} ETH · {currentBidLabel}</div>
+      <div className="bid-hint" style={{ color: '#444' }}>If outbid, ETH is automatically returned to your wallet</div>
       {status && <div className={`status-msg ${status.type}`}>{status.msg}</div>}
     </div>
   )
@@ -217,7 +236,7 @@ function CurrentAuction({ onSettled }) {
           )}
         </div>
 
-        <BidForm auction={a} reservePrice={reservePrice} minIncPct={minIncPct} />
+        <BidForm auction={a} reservePrice={reservePrice} minIncPct={minIncPct} onBidSuccess={refetch} />
 
         {ended && <SettleButton onSettled={() => { refetch(); onSettled?.() }} />}
       </div>
