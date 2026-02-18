@@ -6,6 +6,7 @@ import { RainbowKitProvider, darkTheme } from '@rainbow-me/rainbowkit'
 import { wagmiConfig } from './config'
 import App from './App'
 
+import { ErrorBoundary } from './ErrorBoundary'
 import '@rainbow-me/rainbowkit/styles.css'
 import './index.css'
 
@@ -13,6 +14,7 @@ const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
+    <ErrorBoundary>
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme({
@@ -25,5 +27,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 )

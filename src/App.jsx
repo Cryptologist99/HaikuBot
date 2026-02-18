@@ -228,20 +228,23 @@ function PastAuctions({ refresh }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!client) return
     async function load() {
       setLoading(true)
       try {
+        // Start from contract deployment block to avoid scanning entire chain
+        const DEPLOY_BLOCK = 27000000n
         const [settled, burned] = await Promise.all([
-          client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock: 0n }),
-          client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock: 0n }),
+          client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock: DEPLOY_BLOCK }),
+          client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock: DEPLOY_BLOCK }),
         ])
         const all = [...settled, ...burned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
         setEvents(all)
-      } catch (e) { console.error(e) }
+      } catch (e) { console.error('getLogs error:', e) }
       setLoading(false)
     }
     load()
-  }, [refresh])
+  }, [refresh, client])
 
   if (loading) return <div className="loading" style={{ padding: '20px 0' }}>Loading history…</div>
   if (events.length === 0) return <div className="empty">No settled auctions yet</div>
