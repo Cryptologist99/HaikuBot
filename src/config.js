@@ -8,14 +8,18 @@ export const AUCTION_HOUSE = '0xfD23Baf89Fa34C420aCF0Ddb8Fb13a9Ea74166Df'
 export const AUCTION_ABI = [
   { name: 'auction', type: 'function', stateMutability: 'view',
     inputs: [],
-    outputs: [
-      { name: 'tokenId',   type: 'uint256' },
-      { name: 'amount',    type: 'uint256' },
-      { name: 'startTime', type: 'uint256' },
-      { name: 'endTime',   type: 'uint256' },
-      { name: 'bidder',    type: 'address' },
-      { name: 'settled',   type: 'bool'    },
-    ]
+    outputs: [{
+      type: 'tuple',
+      name: '',
+      components: [
+        { name: 'tokenId',   type: 'uint256' },
+        { name: 'amount',    type: 'uint256' },
+        { name: 'startTime', type: 'uint256' },
+        { name: 'endTime',   type: 'uint256' },
+        { name: 'bidder',    type: 'address' },
+        { name: 'settled',   type: 'bool'    },
+      ]
+    }]
   },
   { name: 'reservePrice', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
   { name: 'minBidIncrementPercentage', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint8' }] },

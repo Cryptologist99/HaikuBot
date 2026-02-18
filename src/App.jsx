@@ -174,7 +174,12 @@ function CurrentAuction({ onSettled }) {
 
   if (!auction) return <div className="loading">Loading auction…</div>
 
-  const noAuction = auction.startTime === 0n || auction.settled
+  // Normalize — viem may return a tuple object or array depending on ABI format
+  const a = Array.isArray(auction)
+    ? { tokenId: auction[0], amount: auction[1], startTime: auction[2], endTime: auction[3], bidder: auction[4], settled: auction[5] }
+    : auction
+
+  const noAuction = !a.startTime || a.startTime === 0n || a.settled
   if (noAuction) {
     return (
       <div className="no-auction">
@@ -184,35 +189,35 @@ function CurrentAuction({ onSettled }) {
     )
   }
 
-  const ended = Number(auction.endTime) <= Math.floor(Date.now() / 1000)
-  const noBids = auction.bidder === '0x0000000000000000000000000000000000000000'
+  const ended = Number(a.endTime) <= Math.floor(Date.now() / 1000)
+  const noBids = !a.bidder || a.bidder === '0x0000000000000000000000000000000000000000'
 
   return (
     <div className="auction-grid">
-      <NFTImage tokenId={auction.tokenId} />
+      <NFTImage tokenId={a.tokenId} />
 
       <div className="auction-info">
         <div>
           <div className="label">Current Auction</div>
-          <div className="token-num">Token #{auction.tokenId.toString()}</div>
+          <div className="token-num">Token #{a.tokenId?.toString()}</div>
         </div>
 
         <div>
           <div className="label">Time Remaining</div>
-          <Countdown endTime={auction.endTime} />
+          <Countdown endTime={a.endTime} />
         </div>
 
         <div>
           <div className="label">Current Bid</div>
           <div className="bid-amount">
-            {noBids ? 'No bids yet' : formatEther(auction.amount) + ' ETH'}
+            {noBids ? 'No bids yet' : formatEther(a.amount) + ' ETH'}
           </div>
           {!noBids && (
-            <div className="bid-who">{shortAddr(auction.bidder)}</div>
+            <div className="bid-who">{shortAddr(a.bidder)}</div>
           )}
         </div>
 
-        <BidForm auction={auction} reservePrice={reservePrice} minIncPct={minIncPct} />
+        <BidForm auction={a} reservePrice={reservePrice} minIncPct={minIncPct} />
 
         {ended && <SettleButton onSettled={() => { refetch(); onSettled?.() }} />}
       </div>
