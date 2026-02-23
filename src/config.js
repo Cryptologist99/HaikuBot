@@ -3,7 +3,7 @@ import { base } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
 export const HAIKU_TOKEN   = '0x7E65A990165C29c2bcda67F495547472Fd05F10A'
-export const AUCTION_HOUSE = '0xfD23Baf89Fa34C420aCF0Ddb8Fb13a9Ea74166Df'
+export const AUCTION_HOUSE = '0x708C3c17c01eb543EDbd056964F72886c7E3de42'
 
 export const AUCTION_ABI = [
   { name: 'auction', type: 'function', stateMutability: 'view',
