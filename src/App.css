@@ -188,3 +188,6 @@ main {
 .past-card-token { font-family: monospace; font-size: 10px; color: var(--muted); margin-bottom: 6px; }
 .past-card-haiku { font-style: italic; font-size: 13px; color: #999; line-height: 1.6; }
 .past-card-price { font-family: monospace; font-size: 11px; color: var(--accent); margin-top: 8px; }
+
+.settling-card { border: 1px dashed #3a3a3a; background: #0d0d0d; }
+.settling-message { font-size: 14px; color: var(--accent); text-align: center; padding: 24px 16px; }

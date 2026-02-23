@@ -147,37 +147,7 @@ function BidForm({ auction, reservePrice, minIncPct, onBidSuccess }) {
   )
 }
 
-// ── Settle Button ─────────────────────────────────────────────────────────────
-
-function SettleButton({ onSettled }) {
-  const [status, setStatus] = useState(null)
-  const { writeContract, data: hash, isPending } = useWriteContract()
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
-
-  useEffect(() => {
-    if (isSuccess) { setStatus({ type: 'success', msg: '✓ Settled!' }); onSettled?.() }
-  }, [isSuccess])
-
-  function settle() {
-    setStatus({ type: 'info', msg: 'Confirm in wallet…' })
-    writeContract({
-      address: AUCTION_HOUSE,
-      abi: AUCTION_ABI,
-      functionName: 'settleAuction',
-    }, {
-      onError: (e) => setStatus({ type: 'error', msg: e.shortMessage || e.message }),
-    })
-  }
-
-  return (
-    <div>
-      <button className="btn btn-settle" onClick={settle} disabled={isPending || isConfirming}>
-        {isPending || isConfirming ? 'Settling…' : 'Settle Auction'}
-      </button>
-      {status && <div className={`status-msg ${status.type}`} style={{ marginTop: 8 }}>{status.msg}</div>}
-    </div>
-  )
-}
+// ── Settle Button removed - automation handles settlement ──────────────────
 
 // ── Current Auction ───────────────────────────────────────────────────────────
 
@@ -292,7 +262,7 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
     console.log('✅ Displaying', allIds.length, 'past haikus')
   }, [currentTokenId, currentAuction, refresh])
 
-  // If current auction ended but not settled, show it in past auctions with settle button
+  // If current auction ended but not settled, show a message
   const ended = currentAuction && Number(currentAuction.endTime) <= Math.floor(Date.now() / 1000)
   const showCurrentAsEnded = ended && !currentAuction.settled
 
@@ -302,12 +272,16 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
   return (
     <div className="past-grid">
       {showCurrentAsEnded && (
-        <PastCard 
-          key={currentAuction.tokenId.toString()} 
-          tokenId={currentAuction.tokenId} 
-          needsSettlement={true}
-          onSettled={onRefresh}
-        />
+        <div className="past-card settling-card">
+          <div className="past-card-body">
+            <div className="settling-message">
+              ⏳ Auction ended - settling automatically...
+            </div>
+            <small style={{ color: '#666', marginTop: 8, display: 'block' }}>
+              New auction will start shortly
+            </small>
+          </div>
+        </div>
       )}
       {tokenIds.map(tokenId => (
         <PastCard key={tokenId.toString()} tokenId={tokenId} />
@@ -316,7 +290,7 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
   )
 }
 
-function PastCard({ tokenId, needsSettlement, onSettled }) {
+function PastCard({ tokenId }) {
   const { data: uri } = useReadContract({
     address: HAIKU_TOKEN,
     abi: TOKEN_ABI,
@@ -337,11 +311,6 @@ function PastCard({ tokenId, needsSettlement, onSettled }) {
         <div className="past-card-token">Token #{tokenId.toString()}</div>
         {meta?.description && (
           <div className="past-card-haiku">{meta.description}</div>
-        )}
-        {needsSettlement && (
-          <div style={{ marginTop: 8 }}>
-            <SettleButton onSettled={onSettled} />
-          </div>
         )}
       </div>
     </div>
