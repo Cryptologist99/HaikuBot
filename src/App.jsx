@@ -198,10 +198,10 @@ function CurrentAuction({ onSettled, onAuctionData }) {
     ? { tokenId: auction[0], amount: auction[1], startTime: auction[2], endTime: auction[3], bidder: auction[4], settled: auction[5] }
     : auction
 
-  // Pass auction data to parent
+  // Pass auction data to parent (convert BigInts to strings for stable deps)
   useEffect(() => {
     onAuctionData?.(a)
-  }, [a.tokenId, a.endTime, a.settled])
+  }, [a.tokenId?.toString(), a.endTime?.toString(), a.settled, onAuctionData])
 
   const noAuction = !a.startTime || a.startTime === 0n || a.settled
   if (noAuction) {
@@ -259,7 +259,7 @@ function CurrentAuction({ onSettled, onAuctionData }) {
 
 // ── Past Auctions ─────────────────────────────────────────────────────────────
 
-function PastAuctions({ refresh, currentAuction }) {
+function PastAuctions({ refresh, currentAuction, onRefresh }) {
   const client = usePublicClient()
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
@@ -299,7 +299,7 @@ function PastAuctions({ refresh, currentAuction }) {
           isBurned={false}
           price={currentAuction.amount}
           needsSettlement={true}
-          onSettled={refresh}
+          onSettled={onRefresh}
         />
       )}
       {events.slice(0, 24).map(ev => {
@@ -373,6 +373,7 @@ export default function App() {
           <PastAuctions 
             refresh={pastRefresh} 
             currentAuction={currentAuction}
+            onRefresh={() => setPastRefresh(r => r + 1)}
           />
         </section>
       </main>
