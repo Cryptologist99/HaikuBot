@@ -181,7 +181,7 @@ function SettleButton({ onSettled }) {
 
 // ── Current Auction ───────────────────────────────────────────────────────────
 
-function CurrentAuction({ onSettled }) {
+function CurrentAuction({ onSettled, onAuctionData }) {
   const { data: auction, refetch } = useReadContract({
     address: AUCTION_HOUSE,
     abi: AUCTION_ABI,
@@ -198,6 +198,11 @@ function CurrentAuction({ onSettled }) {
     ? { tokenId: auction[0], amount: auction[1], startTime: auction[2], endTime: auction[3], bidder: auction[4], settled: auction[5] }
     : auction
 
+  // Pass auction data to parent
+  useEffect(() => {
+    onAuctionData?.(a)
+  }, [a.tokenId, a.endTime, a.settled])
+
   const noAuction = !a.startTime || a.startTime === 0n || a.settled
   if (noAuction) {
     return (
@@ -210,6 +215,16 @@ function CurrentAuction({ onSettled }) {
 
   const ended = Number(a.endTime) <= Math.floor(Date.now() / 1000)
   const noBids = !a.bidder || a.bidder === '0x0000000000000000000000000000000000000000'
+
+  // If auction ended, show message instead of full display (moved to past auctions)
+  if (ended) {
+    return (
+      <div className="auction-ended">
+        <p>📝 Auction ended!</p>
+        <small>Scroll down to settle and see past haikus</small>
+      </div>
+    )
+  }
 
   return (
     <div className="auction-grid">
@@ -237,8 +252,6 @@ function CurrentAuction({ onSettled }) {
         </div>
 
         <BidForm auction={a} reservePrice={reservePrice} minIncPct={minIncPct} onBidSuccess={refetch} />
-
-        {ended && <SettleButton onSettled={() => { refetch(); onSettled?.() }} />}
       </div>
     </div>
   )
@@ -246,7 +259,7 @@ function CurrentAuction({ onSettled }) {
 
 // ── Past Auctions ─────────────────────────────────────────────────────────────
 
-function PastAuctions({ refresh }) {
+function PastAuctions({ refresh, currentAuction }) {
   const client = usePublicClient()
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(true)
@@ -256,8 +269,8 @@ function PastAuctions({ refresh }) {
     async function load() {
       setLoading(true)
       try {
-        // Start from contract deployment block to avoid scanning entire chain
-        const DEPLOY_BLOCK = 27000000n
+        // Start from actual contract deployment block (Feb 18, 2026)
+        const DEPLOY_BLOCK = 42404211n
         const [settled, burned] = await Promise.all([
           client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock: DEPLOY_BLOCK }),
           client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock: DEPLOY_BLOCK }),
@@ -270,11 +283,25 @@ function PastAuctions({ refresh }) {
     load()
   }, [refresh, client])
 
+  // If current auction ended but not settled, show it in past auctions with settle button
+  const ended = currentAuction && Number(currentAuction.endTime) <= Math.floor(Date.now() / 1000)
+  const showCurrentAsEnded = ended && !currentAuction.settled
+
   if (loading) return <div className="loading" style={{ padding: '20px 0' }}>Loading history…</div>
-  if (events.length === 0) return <div className="empty">No settled auctions yet</div>
+  if (events.length === 0 && !showCurrentAsEnded) return <div className="empty">No settled auctions yet</div>
 
   return (
     <div className="past-grid">
+      {showCurrentAsEnded && (
+        <PastCard 
+          key={currentAuction.tokenId.toString()} 
+          tokenId={currentAuction.tokenId} 
+          isBurned={false}
+          price={currentAuction.amount}
+          needsSettlement={true}
+          onSettled={refresh}
+        />
+      )}
       {events.slice(0, 24).map(ev => {
         const tokenId = ev.args.tokenId
         const isBurned = !ev.args.winner
@@ -287,7 +314,7 @@ function PastAuctions({ refresh }) {
   )
 }
 
-function PastCard({ tokenId, isBurned, price }) {
+function PastCard({ tokenId, isBurned, price, needsSettlement, onSettled }) {
   const { data: uri } = useReadContract({
     address: HAIKU_TOKEN,
     abi: TOKEN_ABI,
@@ -312,6 +339,11 @@ function PastCard({ tokenId, isBurned, price }) {
         <div className="past-card-price">
           {isBurned ? 'Burned' : parseFloat(formatEther(price)).toFixed(4) + ' ETH'}
         </div>
+        {needsSettlement && (
+          <div style={{ marginTop: 8 }}>
+            <SettleButton onSettled={onSettled} />
+          </div>
+        )}
       </div>
     </div>
   )
@@ -321,6 +353,7 @@ function PastCard({ tokenId, isBurned, price }) {
 
 export default function App() {
   const [pastRefresh, setPastRefresh] = useState(0)
+  const [currentAuction, setCurrentAuction] = useState(null)
 
   return (
     <div className="app">
@@ -330,11 +363,17 @@ export default function App() {
       </nav>
 
       <main>
-        <CurrentAuction onSettled={() => setPastRefresh(r => r + 1)} />
+        <CurrentAuction 
+          onSettled={() => setPastRefresh(r => r + 1)} 
+          onAuctionData={setCurrentAuction}
+        />
 
         <section className="past-section">
           <div className="section-title">Past Haikus</div>
-          <PastAuctions refresh={pastRefresh} />
+          <PastAuctions 
+            refresh={pastRefresh} 
+            currentAuction={currentAuction}
+          />
         </section>
       </main>
     </div>

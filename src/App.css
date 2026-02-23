@@ -140,6 +140,15 @@ main {
 .no-auction p { font-style: italic; font-size: 22px; margin-bottom: 10px; color: var(--text); }
 .no-auction small { font-family: monospace; font-size: 12px; }
 
+.auction-ended {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--muted);
+  margin-bottom: 60px;
+}
+.auction-ended p { font-size: 20px; margin-bottom: 8px; color: var(--text); }
+.auction-ended small { font-family: monospace; font-size: 12px; }
+
 .loading { color: var(--muted); font-family: monospace; font-size: 13px; }
 .empty { color: var(--muted); font-family: monospace; font-size: 13px; padding: 20px 0; }
 
