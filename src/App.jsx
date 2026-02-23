@@ -267,46 +267,48 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!client) return
     async function load() {
       setLoading(true)
       try {
-        // Start from actual contract deployment block (Feb 18, 2026)
-        const DEPLOY_BLOCK = 42404211n
-        const currentBlock = await client.getBlockNumber()
-        const CHUNK_SIZE = 50000n // Query in 50k block chunks
+        const DEPLOY_BLOCK = 42404211
+        console.log('🔍 Fetching past auctions from Basescan...')
         
-        console.log('🔍 Fetching past auctions from block', DEPLOY_BLOCK, 'to', currentBlock)
+        // Use Basescan API - no RPC limits, instant results
+        const settledTopic = '0xb82e84b04feec47fd0f664838770a050c7694421a469f37b4c5c8bb6c6337253' // AuctionSettled event signature
+        const burnedTopic = '0xc9f72b276a388619c6d185d146697036241880c36654b1a3ffdad07c24038d99'  // AuctionBurned event signature
         
-        let allSettled = []
-        let allBurned = []
+        const [settledRes, burnedRes] = await Promise.all([
+          fetch(`https://api.basescan.org/api?module=logs&action=getLogs&address=${AUCTION_HOUSE}&topic0=${settledTopic}&fromBlock=${DEPLOY_BLOCK}&toBlock=latest`).then(r => r.json()),
+          fetch(`https://api.basescan.org/api?module=logs&action=getLogs&address=${AUCTION_HOUSE}&topic0=${burnedTopic}&fromBlock=${DEPLOY_BLOCK}&toBlock=latest`).then(r => r.json()),
+        ])
         
-        // Chunk the query if range is too large
-        for (let fromBlock = DEPLOY_BLOCK; fromBlock < currentBlock; fromBlock += CHUNK_SIZE) {
-          const toBlock = fromBlock + CHUNK_SIZE > currentBlock ? currentBlock : fromBlock + CHUNK_SIZE
-          console.log(`  📦 Chunk: ${fromBlock} → ${toBlock}`)
-          
-          const [settled, burned] = await Promise.all([
-            client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock, toBlock }),
-            client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock, toBlock }),
-          ])
-          
-          allSettled.push(...settled)
-          allBurned.push(...burned)
-        }
+        const settled = (settledRes.result || []).map(log => ({
+          blockNumber: BigInt(log.blockNumber),
+          args: {
+            tokenId: BigInt(log.topics[1]), // indexed param
+            winner: '0x' + log.topics[2].slice(26), // indexed address (strip padding)
+            amount: BigInt(log.data), // non-indexed param
+          }
+        }))
         
-        console.log('📊 Found events:', { settled: allSettled.length, burned: allBurned.length })
-        const all = [...allSettled, ...allBurned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
+        const burned = (burnedRes.result || []).map(log => ({
+          blockNumber: BigInt(log.blockNumber),
+          args: {
+            tokenId: BigInt(log.topics[1]),
+          }
+        }))
+        
+        console.log('📊 Found events:', { settled: settled.length, burned: burned.length })
+        const all = [...settled, ...burned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
         setEvents(all)
         console.log('✅ Past auctions loaded:', all.length)
       } catch (e) { 
-        console.error('❌ getLogs error:', e)
-        console.error('Error details:', { name: e.name, message: e.message, cause: e.cause })
+        console.error('❌ Basescan fetch error:', e)
       }
       setLoading(false)
     }
     load()
-  }, [refresh, client])
+  }, [refresh])
 
   // If current auction ended but not settled, show it in past auctions with settle button
   const ended = currentAuction && Number(currentAuction.endTime) <= Math.floor(Date.now() / 1000)
