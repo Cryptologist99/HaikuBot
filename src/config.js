@@ -40,8 +40,8 @@ export const AUCTION_ABI = [
 ]
 
 export const TOKEN_ABI = [
-  { name: 'tokenURI',      type: 'function', stateMutability: 'view', inputs: [{ name: 'tokenId', type: 'uint256' }], outputs: [{ type: 'string' }] },
-  { name: 'currentTokenId', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { name: 'tokenURI', type: 'function', stateMutability: 'view', inputs: [{ name: 'tokenId', type: 'uint256' }], outputs: [{ type: 'string' }] },
+  { name: 'currentTokenId', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ name: '', type: 'uint256' }] },
 ]
 
 // WalletConnect project ID — get a free one at https://cloud.walletconnect.com
