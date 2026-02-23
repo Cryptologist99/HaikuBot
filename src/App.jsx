@@ -273,13 +273,19 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
       try {
         // Start from actual contract deployment block (Feb 18, 2026)
         const DEPLOY_BLOCK = 42404211n
+        console.log('🔍 Fetching past auctions from block', DEPLOY_BLOCK)
         const [settled, burned] = await Promise.all([
           client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock: DEPLOY_BLOCK }),
           client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock: DEPLOY_BLOCK }),
         ])
+        console.log('📊 Found events:', { settled: settled.length, burned: burned.length })
         const all = [...settled, ...burned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
         setEvents(all)
-      } catch (e) { console.error('getLogs error:', e) }
+        console.log('✅ Past auctions loaded:', all.length)
+      } catch (e) { 
+        console.error('❌ getLogs error:', e)
+        console.error('Error details:', { name: e.name, message: e.message, cause: e.cause })
+      }
       setLoading(false)
     }
     load()
