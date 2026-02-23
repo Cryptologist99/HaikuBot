@@ -52,7 +52,7 @@ export const wagmiConfig = getDefaultConfig({
   projectId: WC_PROJECT_ID,
   chains: [base],
   transports: { 
-    [base.id]: http('https://base.llamarpc.com', {
+    [base.id]: http('https://base-mainnet.g.alchemy.com/v2/demo', {
       batch: { wait: 50 },
       retryCount: 3,
       timeout: 30_000,

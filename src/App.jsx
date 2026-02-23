@@ -273,13 +273,30 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
       try {
         // Start from actual contract deployment block (Feb 18, 2026)
         const DEPLOY_BLOCK = 42404211n
-        console.log('🔍 Fetching past auctions from block', DEPLOY_BLOCK)
-        const [settled, burned] = await Promise.all([
-          client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock: DEPLOY_BLOCK }),
-          client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock: DEPLOY_BLOCK }),
-        ])
-        console.log('📊 Found events:', { settled: settled.length, burned: burned.length })
-        const all = [...settled, ...burned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
+        const currentBlock = await client.getBlockNumber()
+        const CHUNK_SIZE = 50000n // Query in 50k block chunks
+        
+        console.log('🔍 Fetching past auctions from block', DEPLOY_BLOCK, 'to', currentBlock)
+        
+        let allSettled = []
+        let allBurned = []
+        
+        // Chunk the query if range is too large
+        for (let fromBlock = DEPLOY_BLOCK; fromBlock < currentBlock; fromBlock += CHUNK_SIZE) {
+          const toBlock = fromBlock + CHUNK_SIZE > currentBlock ? currentBlock : fromBlock + CHUNK_SIZE
+          console.log(`  📦 Chunk: ${fromBlock} → ${toBlock}`)
+          
+          const [settled, burned] = await Promise.all([
+            client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionSettled'), fromBlock, toBlock }),
+            client.getLogs({ address: AUCTION_HOUSE, event: AUCTION_ABI.find(x => x.name === 'AuctionBurned'),  fromBlock, toBlock }),
+          ])
+          
+          allSettled.push(...settled)
+          allBurned.push(...burned)
+        }
+        
+        console.log('📊 Found events:', { settled: allSettled.length, burned: allBurned.length })
+        const all = [...allSettled, ...allBurned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
         setEvents(all)
         console.log('✅ Past auctions loaded:', all.length)
       } catch (e) { 
