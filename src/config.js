@@ -51,5 +51,11 @@ export const wagmiConfig = getDefaultConfig({
   appName: 'Daily Haiku',
   projectId: WC_PROJECT_ID,
   chains: [base],
-  transports: { [base.id]: http() },
+  transports: { 
+    [base.id]: http('https://base.llamarpc.com', {
+      batch: { wait: 50 },
+      retryCount: 3,
+      timeout: 30_000,
+    })
+  },
 })
