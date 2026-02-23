@@ -262,60 +262,42 @@ function CurrentAuction({ onSettled, onAuctionData }) {
 // ── Past Auctions ─────────────────────────────────────────────────────────────
 
 function PastAuctions({ refresh, currentAuction, onRefresh }) {
-  const client = usePublicClient()
-  const [events, setEvents] = useState([])
+  const [tokenIds, setTokenIds] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const { data: currentTokenId } = useReadContract({
+    address: HAIKU_TOKEN,
+    abi: TOKEN_ABI,
+    functionName: 'currentTokenId',
+  })
+
   useEffect(() => {
-    async function load() {
-      setLoading(true)
-      try {
-        const DEPLOY_BLOCK = 42404211
-        console.log('🔍 Fetching past auctions from Basescan...')
-        
-        // Use Basescan API - no RPC limits, instant results
-        const settledTopic = '0xb82e84b04feec47fd0f664838770a050c7694421a469f37b4c5c8bb6c6337253' // AuctionSettled event signature
-        const burnedTopic = '0xc9f72b276a388619c6d185d146697036241880c36654b1a3ffdad07c24038d99'  // AuctionBurned event signature
-        
-        const [settledRes, burnedRes] = await Promise.all([
-          fetch(`https://api.basescan.org/api?module=logs&action=getLogs&address=${AUCTION_HOUSE}&topic0=${settledTopic}&fromBlock=${DEPLOY_BLOCK}&toBlock=latest`).then(r => r.json()),
-          fetch(`https://api.basescan.org/api?module=logs&action=getLogs&address=${AUCTION_HOUSE}&topic0=${burnedTopic}&fromBlock=${DEPLOY_BLOCK}&toBlock=latest`).then(r => r.json()),
-        ])
-        
-        const settled = (settledRes.result || []).map(log => ({
-          blockNumber: BigInt(log.blockNumber),
-          args: {
-            tokenId: BigInt(log.topics[1]), // indexed param
-            winner: '0x' + log.topics[2].slice(26), // indexed address (strip padding)
-            amount: BigInt(log.data), // non-indexed param
-          }
-        }))
-        
-        const burned = (burnedRes.result || []).map(log => ({
-          blockNumber: BigInt(log.blockNumber),
-          args: {
-            tokenId: BigInt(log.topics[1]),
-          }
-        }))
-        
-        console.log('📊 Found events:', { settled: settled.length, burned: burned.length })
-        const all = [...settled, ...burned].sort((a, b) => Number(b.blockNumber - a.blockNumber))
-        setEvents(all)
-        console.log('✅ Past auctions loaded:', all.length)
-      } catch (e) { 
-        console.error('❌ Basescan fetch error:', e)
+    if (!currentTokenId) return
+    
+    console.log('📊 Total tokens minted:', currentTokenId.toString())
+    
+    // Build array of token IDs from 1 to currentTokenId (excluding current auction if active)
+    const allIds = []
+    for (let i = 1n; i <= currentTokenId; i++) {
+      // Skip the current auction's token if it's not settled yet
+      if (currentAuction && i === currentAuction.tokenId && !currentAuction.settled) {
+        continue
       }
-      setLoading(false)
+      allIds.push(i)
     }
-    load()
-  }, [refresh])
+    
+    // Reverse to show newest first
+    setTokenIds(allIds.reverse())
+    setLoading(false)
+    console.log('✅ Displaying', allIds.length, 'past haikus')
+  }, [currentTokenId, currentAuction, refresh])
 
   // If current auction ended but not settled, show it in past auctions with settle button
   const ended = currentAuction && Number(currentAuction.endTime) <= Math.floor(Date.now() / 1000)
   const showCurrentAsEnded = ended && !currentAuction.settled
 
   if (loading) return <div className="loading" style={{ padding: '20px 0' }}>Loading history…</div>
-  if (events.length === 0 && !showCurrentAsEnded) return <div className="empty">No settled auctions yet</div>
+  if (tokenIds.length === 0 && !showCurrentAsEnded) return <div className="empty">No haikus yet</div>
 
   return (
     <div className="past-grid">
@@ -323,25 +305,18 @@ function PastAuctions({ refresh, currentAuction, onRefresh }) {
         <PastCard 
           key={currentAuction.tokenId.toString()} 
           tokenId={currentAuction.tokenId} 
-          isBurned={false}
-          price={currentAuction.amount}
           needsSettlement={true}
           onSettled={onRefresh}
         />
       )}
-      {events.slice(0, 24).map(ev => {
-        const tokenId = ev.args.tokenId
-        const isBurned = !ev.args.winner
-        const price = isBurned ? null : ev.args.amount
-        return (
-          <PastCard key={tokenId.toString()} tokenId={tokenId} isBurned={isBurned} price={price} />
-        )
-      })}
+      {tokenIds.map(tokenId => (
+        <PastCard key={tokenId.toString()} tokenId={tokenId} />
+      ))}
     </div>
   )
 }
 
-function PastCard({ tokenId, isBurned, price, needsSettlement, onSettled }) {
+function PastCard({ tokenId, needsSettlement, onSettled }) {
   const { data: uri } = useReadContract({
     address: HAIKU_TOKEN,
     abi: TOKEN_ABI,
@@ -363,9 +338,6 @@ function PastCard({ tokenId, isBurned, price, needsSettlement, onSettled }) {
         {meta?.description && (
           <div className="past-card-haiku">{meta.description}</div>
         )}
-        <div className="past-card-price">
-          {isBurned ? 'Burned' : parseFloat(formatEther(price)).toFixed(4) + ' ETH'}
-        </div>
         {needsSettlement && (
           <div style={{ marginTop: 8 }}>
             <SettleButton onSettled={onSettled} />
