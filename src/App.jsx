@@ -191,17 +191,19 @@ function CurrentAuction({ onSettled, onAuctionData }) {
   const { data: reservePrice } = useReadContract({ address: AUCTION_HOUSE, abi: AUCTION_ABI, functionName: 'reservePrice' })
   const { data: minIncPct }    = useReadContract({ address: AUCTION_HOUSE, abi: AUCTION_ABI, functionName: 'minBidIncrementPercentage' })
 
-  if (!auction) return <div className="loading">Loading auction…</div>
-
   // Normalize — viem may return a tuple object or array depending on ABI format
-  const a = Array.isArray(auction)
+  const a = auction && (Array.isArray(auction)
     ? { tokenId: auction[0], amount: auction[1], startTime: auction[2], endTime: auction[3], bidder: auction[4], settled: auction[5] }
-    : auction
+    : auction)
 
   // Pass auction data to parent (convert BigInts to strings for stable deps)
   useEffect(() => {
-    onAuctionData?.(a)
-  }, [a.tokenId?.toString(), a.endTime?.toString(), a.settled, onAuctionData])
+    if (a) {
+      onAuctionData?.(a)
+    }
+  }, [a?.tokenId?.toString(), a?.endTime?.toString(), a?.settled, onAuctionData])
+
+  if (!auction) return <div className="loading">Loading auction…</div>
 
   const noAuction = !a.startTime || a.startTime === 0n || a.settled
   if (noAuction) {
