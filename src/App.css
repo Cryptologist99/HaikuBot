@@ -152,6 +152,19 @@ main {
 .loading { color: var(--muted); font-family: monospace; font-size: 13px; }
 .empty { color: var(--muted); font-family: monospace; font-size: 13px; padding: 20px 0; }
 
+
+/* ── Ended Haiku ──────────────────────────────────────────────── */
+.ended-haiku {
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-top: 8px;
+}
+
+.ended-line {
+  margin-bottom: 4px;
+}
 /* ── Past auctions ────────────────────────────────────────────── */
 .past-section { margin-top: 0; }
 

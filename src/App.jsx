@@ -246,16 +246,6 @@ function CurrentAuction({ onSettled, onAuctionData }) {
   const ended = Number(a.endTime) <= Math.floor(Date.now() / 1000)
   const noBids = !a.bidder || a.bidder === '0x0000000000000000000000000000000000000000'
 
-  // If auction ended, show message instead of full display (moved to past auctions)
-  if (ended) {
-    return (
-      <div className="auction-ended">
-        <p>⏳ Auction ended - new auction momentarily</p>
-        <small>Scroll down to settle and see past haikus</small>
-      </div>
-    )
-  }
-
   return (
     <div className="auction-grid">
       <NFTImage tokenId={a.tokenId} />
@@ -267,8 +257,16 @@ function CurrentAuction({ onSettled, onAuctionData }) {
         </div>
 
         <div>
-          <div className="label">Time Remaining</div>
-          <Countdown endTime={a.endTime} />
+          <div className="label">{ended ? 'Status' : 'Time Remaining'}</div>
+          {ended ? (
+            <div className="ended-haiku">
+              <div className="ended-line">The gavel has fallen</div>
+              <div className="ended-line">New verses are gathering now</div>
+              <div className="ended-line">Next poem begins soon</div>
+            </div>
+          ) : (
+            <Countdown endTime={a.endTime} />
+          )}
         </div>
 
         <div>
