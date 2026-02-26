@@ -136,7 +136,7 @@ function BidForm({ auction, reservePrice, minIncPct, onBidSuccess }) {
     ? (reservePrice ?? 1000000000000000n)
     : auction.amount + (auction.amount * BigInt(minIncPct ?? 5) / 100n)
 
-  const minBidEth = parseFloat(formatEther(minBid)).toFixed(4)
+  const minBidEth = parseFloat(formatEther(minBid)).toFixed(5)
 
   useEffect(() => {
     setAmount(minBidEth)
@@ -176,7 +176,7 @@ function BidForm({ auction, reservePrice, minIncPct, onBidSuccess }) {
   if (ended) return null
 
   const currentBidLabel = auction.amount === 0n
-    ? `Reserve: ${parseFloat(formatEther(reservePrice ?? 1000000000000000n)).toFixed(4)} ETH`
+    ? `${parseFloat(formatEther(reservePrice ?? 1000000000000000n)).toFixed(5)} ETH starting bid`
     : `Current bid + 5%: ${minBidEth} ETH`
 
   return (
@@ -250,7 +250,7 @@ function CurrentAuction({ onSettled, onAuctionData }) {
   if (ended) {
     return (
       <div className="auction-ended">
-        <p>📝 Auction ended!</p>
+        <p>⏳ Auction ended - new auction momentarily</p>
         <small>Scroll down to settle and see past haikus</small>
       </div>
     )
