@@ -60,7 +60,7 @@ function CustomConnectButton() {
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
 import { useState, useEffect, useRef } from 'react'
-import { HAIKU_TOKEN, AUCTION_HOUSE, AUCTION_ABI, TOKEN_ABI } from './config'
+import { HAIKU_TOKEN, AUCTION_HOUSE, AUCTION_ABI, TOKEN_ABI, BURN_ADDRESS, OPENSEA_URL } from './config'
 import './App.css'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

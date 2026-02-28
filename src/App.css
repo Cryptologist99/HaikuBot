@@ -8,6 +8,7 @@ nav {
   padding: 20px 32px;
   border-bottom: 1px solid var(--border);
 }
+
 .nav-title {
   font-size: 18px;
   letter-spacing: 4px;
@@ -30,8 +31,12 @@ main {
   align-items: start;
   margin-bottom: 80px;
 }
+
 @media (max-width: 640px) {
-  .auction-grid { grid-template-columns: 1fr; gap: 32px; }
+  .auction-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 .nft-frame {
@@ -41,15 +46,33 @@ main {
   border-radius: 2px;
   overflow: hidden;
 }
-.nft-frame img { width: 100%; height: 100%; display: block; object-fit: cover; }
-.nft-placeholder {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  color: #333; font-size: 24px;
-}
-.nft-placeholder.small { font-size: 16px; }
 
-.auction-info { display: flex; flex-direction: column; gap: 28px; }
+.nft-frame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.nft-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 24px;
+}
+
+.nft-placeholder.small {
+  font-size: 16px;
+}
+
+.auction-info {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
 
 .label {
   font-family: monospace;
@@ -59,7 +82,12 @@ main {
   color: var(--muted);
   margin-bottom: 6px;
 }
-.token-num { font-size: 13px; color: var(--muted); font-family: monospace; }
+
+.token-num {
+  font-size: 13px;
+  color: var(--muted);
+  font-family: monospace;
+}
 
 .countdown {
   font-family: monospace;
@@ -67,15 +95,35 @@ main {
   letter-spacing: 2px;
   color: var(--text);
 }
-.countdown.ended { color: var(--muted); font-size: 24px; }
 
-.bid-amount { font-size: 28px; color: var(--accent); }
-.bid-who { font-family: monospace; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.countdown.ended {
+  color: var(--muted);
+  font-size: 24px;
+}
+
+.bid-amount {
+  font-size: 28px;
+  color: var(--accent);
+}
+
+.bid-who {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
 
 /* ── Bid form ─────────────────────────────────────────────────── */
-.bid-form { display: flex; flex-direction: column; gap: 8px; }
+.bid-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-.bid-input-row { display: flex; gap: 8px; }
+.bid-input-row {
+  display: flex;
+  gap: 8px;
+}
 
 .bid-input-row input {
   flex: 1;
@@ -89,9 +137,16 @@ main {
   outline: none;
   min-width: 0;
 }
-.bid-input-row input:focus { border-color: var(--accent); }
 
-.bid-hint { font-family: monospace; font-size: 13px; color: var(--muted); }
+.bid-input-row input:focus {
+  border-color: var(--accent);
+}
+
+.bid-hint {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--muted);
+}
 
 /* ── Buttons ──────────────────────────────────────────────────── */
 .btn {
@@ -104,7 +159,11 @@ main {
   transition: opacity 0.15s;
   white-space: nowrap;
 }
-.btn:disabled { opacity: 0.4; cursor: default; }
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
 
 .btn-primary {
   background: var(--accent);
@@ -112,13 +171,18 @@ main {
   color: #0c0c0c;
   font-weight: bold;
 }
+
 .btn-settle {
   background: transparent;
   border-color: #333;
   color: #888;
   width: 100%;
 }
-.btn-settle:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+
+.btn-settle:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
 
 /* ── Status messages ──────────────────────────────────────────── */
 .status-msg {
@@ -127,9 +191,24 @@ main {
   padding: 8px 12px;
   border-radius: 2px;
 }
-.status-msg.info    { background: #1a1a2e; border: 1px solid #333; color: #8888cc; }
-.status-msg.success { background: #0d1f0d; border: 1px solid #2a4a2a; color: var(--green); }
-.status-msg.error   { background: #1f0d0d; border: 1px solid #4a2a2a; color: #cc6666; }
+
+.status-msg.info {
+  background: #1a1a2e;
+  border: 1px solid #333;
+  color: #8888cc;
+}
+
+.status-msg.success {
+  background: #0d1f0d;
+  border: 1px solid #2a4a2a;
+  color: var(--green);
+}
+
+.status-msg.error {
+  background: #1f0d0d;
+  border: 1px solid #4a2a2a;
+  color: #cc6666;
+}
 
 /* ── No auction / loading ─────────────────────────────────────── */
 .no-auction {
@@ -137,8 +216,18 @@ main {
   padding: 80px 0;
   color: var(--muted);
 }
-.no-auction p { font-style: italic; font-size: 22px; margin-bottom: 10px; color: var(--text); }
-.no-auction small { font-family: monospace; font-size: 12px; }
+
+.no-auction p {
+  font-style: italic;
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.no-auction small {
+  font-family: monospace;
+  font-size: 12px;
+}
 
 .auction-ended {
   text-align: center;
@@ -146,12 +235,30 @@ main {
   color: var(--muted);
   margin-bottom: 60px;
 }
-.auction-ended p { font-size: 20px; margin-bottom: 8px; color: var(--text); }
-.auction-ended small { font-family: monospace; font-size: 12px; }
 
-.loading { color: var(--muted); font-family: monospace; font-size: 13px; }
-.empty { color: var(--muted); font-family: monospace; font-size: 13px; padding: 20px 0; }
+.auction-ended p {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
 
+.auction-ended small {
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.loading {
+  color: var(--muted);
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.empty {
+  color: var(--muted);
+  font-family: monospace;
+  font-size: 13px;
+  padding: 20px 0;
+}
 
 /* ── Ended Haiku ──────────────────────────────────────────────── */
 .ended-haiku {
@@ -165,8 +272,11 @@ main {
 .ended-line {
   margin-bottom: 4px;
 }
+
 /* ── Past auctions ────────────────────────────────────────────── */
-.past-section { margin-top: 0; }
+.past-section {
+  margin-top: 0;
+}
 
 .section-title {
   font-family: monospace;
@@ -192,15 +302,123 @@ main {
   overflow: hidden;
   transition: border-color 0.2s;
 }
-.past-card:hover { border-color: #3a3a3a; }
 
-.past-card-img { aspect-ratio: 1; overflow: hidden; }
-.past-card-img img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.past-card:hover {
+  border-color: #3a3a3a;
+}
 
-.past-card-body { padding: 12px 14px 16px; }
-.past-card-token { font-family: monospace; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-.past-card-haiku { font-style: italic; font-size: 13px; color: #999; line-height: 1.6; }
-.past-card-price { font-family: monospace; font-size: 13px; color: var(--accent); margin-top: 8px; }
+.past-card-img {
+  aspect-ratio: 1;
+  overflow: hidden;
+}
 
-.settling-card { border: 1px dashed #3a3a3a; background: #0d0d0d; }
-.settling-message { font-size: 14px; color: var(--accent); text-align: center; padding: 24px 16px; }
+.past-card-img img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.past-card-body {
+  padding: 12px 14px 16px;
+}
+
+.past-card-token {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.past-card-haiku {
+  font-style: italic;
+  font-size: 13px;
+  color: #999;
+  line-height: 1.6;
+}
+
+.past-card-price {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: 8px;
+}
+
+.settling-card {
+  border: 1px dashed #3a3a3a;
+  background: #0d0d0d;
+}
+
+.settling-message {
+  font-size: 14px;
+  color: var(--accent);
+  text-align: center;
+  padding: 24px 16px;
+}
+
+/* ── Burned tokens ─────────────────────────────────────────────── */
+.past-card.burned {
+  border-color: #cc4444;
+  opacity: 0.85;
+}
+
+.past-card.burned:hover {
+  border-color: #ff6666;
+}
+
+.past-card-img {
+  position: relative;
+}
+
+.burned-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(204, 68, 68, 0.9);
+  padding: 8px 16px;
+  border-radius: 2px;
+  font-family: monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: white;
+}
+
+.burned-overlay span {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.burned-badge {
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #cc6666;
+  margin-bottom: 8px;
+}
+
+/* ── Past card header & OpenSea link ───────────────────────────── */
+.past-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.past-card-token {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.opensea-link {
+  font-size: 14px;
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.opensea-link:hover {
+  opacity: 1;
+}
