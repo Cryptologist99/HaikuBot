@@ -308,6 +308,7 @@ main {
 }
 
 .past-card-img {
+  position: relative;
   aspect-ratio: 1;
   overflow: hidden;
 }
@@ -390,12 +391,20 @@ main {
 }
 
 .burned-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(204, 102, 102, 0.95);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
   font-family: monospace;
   font-size: 10px;
-  letter-spacing: 2px;
+  font-weight: bold;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  color: #cc6666;
-  margin-bottom: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 10;
 }
 
 /* ── Past card header & OpenSea link ───────────────────────────── */
