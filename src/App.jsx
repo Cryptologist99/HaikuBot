@@ -353,7 +353,15 @@ function PastCard({ tokenId }) {
     functionName: 'tokenURI',
     args: [tokenId],
   })
+  const { data: owner } = useReadContract({
+    address: HAIKU_TOKEN,
+    abi: TOKEN_ABI,
+    functionName: 'ownerOf',
+    args: [tokenId],
+  })
   const meta = uri ? decodeTokenURI(uri) : null
+  const isBurned = owner && owner.toLowerCase() === BURN_ADDRESS.toLowerCase()
+  const openSeaLink = `${OPENSEA_URL}/${HAIKU_TOKEN}/${tokenId}`
 
   return (
     <div className="past-card">
@@ -362,9 +370,15 @@ function PastCard({ tokenId }) {
           ? <img src={meta.image} alt={`Token #${tokenId}`} />
           : <div className="nft-placeholder small">—</div>
         }
+        {isBurned && <div className="burned-badge">🔥 BURNED</div>}
       </div>
       <div className="past-card-body">
-        <div className="past-card-token">Token #{tokenId.toString()}</div>
+        <div className="past-card-token">
+          Token #{tokenId.toString()}
+          <a href={openSeaLink} target="_blank" rel="noopener noreferrer" className="opensea-link" title="View on OpenSea">
+            🌊
+          </a>
+        </div>
         {meta?.description && (
           <div className="past-card-haiku">{meta.description}</div>
         )}
