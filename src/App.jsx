@@ -353,15 +353,15 @@ function PastCard({ tokenId }) {
     functionName: 'tokenURI',
     args: [tokenId],
   })
-  const { data: owner } = useReadContract({
+  const { data: owner, isLoading: ownerLoading } = useReadContract({
     address: HAIKU_TOKEN,
     abi: TOKEN_ABI,
     functionName: 'ownerOf',
     args: [tokenId],
   })
   const meta = uri ? decodeTokenURI(uri) : null
-  const isBurned = owner && owner.toLowerCase() === BURN_ADDRESS.toLowerCase()
-  const openSeaLink = `${OPENSEA_URL}/${HAIKU_TOKEN}/${tokenId}`
+  const isBurned = !ownerLoading && owner && owner.toLowerCase() === BURN_ADDRESS.toLowerCase()
+  const openSeaLink = `${OPENSEA_URL}/${tokenId}`
 
   return (
     <div className="past-card">
