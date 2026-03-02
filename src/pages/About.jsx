@@ -36,18 +36,13 @@ export default function About() {
       <section className="about-section">
         <h2>Fully Onchain NFTs</h2>
         <p>
-          Every Daily Haiku NFT is <strong>completely onchain</strong> - no IPFS, no external hosting, 
+          Every Daily Haiku NFT is completely onchain - no IPFS, no external hosting, 
           no dependencies on third-party services. The haiku text, SVG image, and all metadata are 
           stored directly in the smart contract on Base.
         </p>
         <p>
-          This means your haiku will exist as long as the blockchain exists. No broken links, 
-          no disappeared images, no centralized servers to maintain. The art and the poem are 
+          This means your haiku will exist as long as the blockchain exists. The art and the poem are 
           permanent and immutable, encoded directly into Ethereum's layer 2.
-        </p>
-        <p>
-          Each token's <code>tokenURI</code> returns a base64-encoded JSON metadata object containing 
-          an onchain SVG image. It's all there, forever, on Base.
         </p>
       </section>
 
