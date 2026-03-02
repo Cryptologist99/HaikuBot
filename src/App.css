@@ -9,11 +9,56 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
 .nav-title {
   font-size: 18px;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.nav-title:hover {
+  opacity: 0.8;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .nav-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  nav {
+    padding: 16px 20px;
+  }
+  
+  .nav-title {
+    font-size: 16px;
+  }
 }
 
 /* ── Layout ───────────────────────────────────────────────────── */
@@ -430,4 +475,117 @@ main {
 
 .opensea-link:hover {
   opacity: 1;
+}
+
+/* ── About Page ──────────────────────────────────────────────── */
+.about-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.about-page h1 {
+  font-size: 36px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 48px;
+}
+
+.about-section {
+  margin-bottom: 48px;
+}
+
+.about-section h2 {
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.about-section p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.about-section ol,
+.about-section ul {
+  padding-left: 24px;
+  color: var(--muted);
+}
+
+.about-section li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.about-haiku {
+  margin-top: 60px;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.haiku-line {
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text);
+}
+
+/* ── $HAIKU Page ─────────────────────────────────────────────── */
+.haiku-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+.coming-soon {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.coming-soon h1 {
+  font-size: 48px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 48px;
+}
+
+.coming-soon-content {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.large-text {
+  font-size: 28px;
+  color: var(--muted);
+  margin-bottom: 48px;
+  font-style: italic;
+}
+
+.haiku-placeholder {
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.haiku-placeholder .haiku-line {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .coming-soon h1 {
+    font-size: 32px;
+  }
+  
+  .large-text {
+    font-size: 22px;
+  }
 }
