@@ -238,11 +238,12 @@ function PastAuctions({ refresh, currentAuction }) {
   useEffect(() => {
     if (!currentTokenId) return
     
-    console.log('📊 Total tokens minted:', currentTokenId.toString())
+    console.log('📊 currentTokenId (next to mint):', currentTokenId.toString())
     
-    // Build array of token IDs from 1 to currentTokenId (excluding current auction if active)
+    // Build array of token IDs from 0 to currentTokenId-1 (all minted tokens)
+    // Exclude current auction token if it's not settled yet
     const allIds = []
-    for (let i = 1n; i <= currentTokenId; i++) {
+    for (let i = 0n; i < currentTokenId; i++) {
       // Skip the current auction's token if it's not settled yet
       if (currentAuction && i === currentAuction.tokenId && !currentAuction.settled) {
         continue
@@ -253,7 +254,7 @@ function PastAuctions({ refresh, currentAuction }) {
     // Reverse to show newest first
     setTokenIds(allIds.reverse())
     setLoading(false)
-    console.log('✅ Displaying', allIds.length, 'past haikus')
+    console.log('✅ Displaying', allIds.length, 'past haikus (tokens', allIds[allIds.length - 1]?.toString(), 'to', allIds[0]?.toString() + ')')
   }, [currentTokenId, currentAuction, refresh])
 
   // If current auction ended but not settled, show a message
