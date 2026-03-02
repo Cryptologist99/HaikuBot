@@ -140,6 +140,7 @@ function BidForm({ auction, reservePrice, minIncPct, onBidSuccess }) {
       </div>
       <div className="bid-hint">Min bid: {minBidEth} ETH · {currentBidLabel}</div>
       <div className="bid-hint" style={{ color: '#444' }}>If outbid, ETH is automatically returned to your wallet</div>
+      <div className="bid-hint" style={{ color: '#444' }}>Bids within 5 minutes of end time extend the auction by 5 minutes</div>
       {status && <div className={`status-msg ${status.type}`}>{status.msg}</div>}
     </div>
   )
