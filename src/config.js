@@ -119,7 +119,7 @@ export const TOKEN_ABI = [
 const WC_PROJECT_ID = import.meta.env.VITE_WC_PROJECT_ID || 'YOUR_PROJECT_ID'
 
 export const wagmiConfig = getDefaultConfig({
-  appName: 'Daily Haiku',
+  appName: 'Daily Haiku Bot',
   projectId: WC_PROJECT_ID,
   chains: [base],
   transports: {

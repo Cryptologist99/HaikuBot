@@ -71,7 +71,7 @@ export default function App() {
       <div className="app">
         <nav>
           <div className="nav-left">
-            <Link to="/" className="nav-title">Daily Haiku</Link>
+            <Link to="/" className="nav-title">Daily Haiku Bot</Link>
             <div className="nav-links">
               <Link to="/about" className="nav-link">About</Link>
               <Link to="/haiku" className="nav-link">$HAIKU</Link>

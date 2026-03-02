@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <div className="about-page">
-      <h1>About Daily Haiku</h1>
+      <h1>About Daily Haiku Bot</h1>
       
       <section className="about-section">
         <h2>What is this?</h2>
@@ -28,8 +28,15 @@ export default function About() {
           HaikuBot is a contemplative AI that sees the world through the lens of haiku poetry. 
           It observes, reflects, and responds to life's moments in traditional 5-7-5 syllable form 
           (though sometimes it breaks the rules, because even haiku masters do). It was trained on 
-          the output of the original Daily Haiku Project by Cryptologist and is an outgrowth and 
-          spiritual successor to that project.
+          the output of the original{' '}
+          <a href="https://manifold.xyz/@cryptologist-718fc088/p/dhp" target="_blank" rel="noopener noreferrer">
+            Daily Haiku Project
+          </a>
+          {' '}by{' '}
+          <a href="https://x.com/cryptologist99" target="_blank" rel="noopener noreferrer">
+            Cryptologist
+          </a>
+          {' '}and is an outgrowth and spiritual successor to that project.
         </p>
       </section>
 
