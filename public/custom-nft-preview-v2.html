@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Haiku NFT - Simplified Design</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #0a0a0a;
+            font-family: 'Georgia', serif;
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #cf6;
+        }
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .nft-card {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.3s;
+        }
+        .nft-card:hover {
+            border-color: #cf6;
+        }
+        .nft-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .nft-info {
+            font-family: monospace;
+            font-size: 12px;
+            color: #aaa;
+        }
+        .nft-info h3 {
+            color: #cf6;
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            font-family: 'Georgia', serif;
+        }
+        .stat {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-label {
+            color: #666;
+        }
+        .stat-value {
+            color: #cf6;
+            font-weight: bold;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Haiku NFT - Simplified</h1>
+    <div class="subtitle">Solid backgrounds • Max 3 dots • No gradients</div>
+    
+    <div class="grid" id="nftGrid"></div>
+
+    <script>
+        const haiku = "Winter moon rises / Bare branches scratch at the sky / Frost claims everything";
+        
+        // Solid background colors - whites, greys, yellows
+        const backgrounds = [
+            { color: "#ffffff", name: "Pure White" },
+            { color: "#f8f8f8", name: "Off White" },
+            { color: "#f0f0f0", name: "Light Grey" },
+            { color: "#e8e8e8", name: "Medium Light Grey" },
+            { color: "#d8d8d8", name: "Medium Grey" },
+            { color: "#c8c8c8", name: "Darker Grey" },
+            { color: "#fffef5", name: "Cream" },
+            { color: "#fffaed", name: "Pale Yellow" },
+            { color: "#fff8e1", name: "Light Cream" },
+            { color: "#faf5e8", name: "Warm Beige" },
+            { color: "#f5f0e6", name: "Light Tan" },
+            { color: "#eee8dc", name: "Parchment" }
+        ];
+
+        function generateSVG(bgColor, seed) {
+            // Generate 1-3 dots based on seed
+            const numDots = 1 + (seed % 3); // 1, 2, or 3 dots
+            let dots = '';
+            
+            for (let i = 0; i < numDots; i++) {
+                const cx = 80 + ((seed * (i + 7)) % 340);
+                const cy = 80 + (((seed >> (i * 5)) % 340));
+                const r = 2 + ((seed >> (i * 3)) % 3); // radius 2-4
+                const opacity = 0.15 + ((seed % 10) / 100); // 0.15-0.25
+                dots += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#2a2a2a" opacity="${opacity}"/>`;
+            }
+            
+            // Split haiku into lines and create tspans
+            const lines = haiku.split(' / ');
+            const tspans = lines.map((line, i) => 
+                `<tspan x="250" dy="${i === 0 ? '0' : '1.5em'}">${line}</tspan>`
+            ).join('');
+            
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                    <rect width="500" height="500" fill="${bgColor}"/>
+                    ${dots}
+                    <text x="250" y="220" font-family="Georgia, serif" font-size="18" 
+                          fill="#2a2a2a" text-anchor="middle" font-style="italic">
+                        ${tspans}
+                    </text>
+                </svg>
+            `;
+        }
+
+        function renderNFTs() {
+            const grid = document.getElementById('nftGrid');
+            
+            backgrounds.forEach((bg, index) => {
+                const seed = 12345 + (index * 1000); // Different seed for each
+                const svg = generateSVG(bg.color, seed);
+                const numDots = 1 + (seed % 3);
+                
+                const card = document.createElement('div');
+                card.className = 'nft-card';
+                card.innerHTML = `
+                    <div class="nft-preview">${svg}</div>
+                    <div class="nft-info">
+                        <h3>${bg.name}</h3>
+                        <div class="stat">
+                            <span class="stat-label">Background:</span>
+                            <span class="stat-value">${bg.color}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Dots:</span>
+                            <span class="stat-value">${numDots}</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Decoration:</span>
+                            <span class="stat-value">Minimal</span>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        renderNFTs();
+    </script>
+</body>
+</html>
