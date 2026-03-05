@@ -79,7 +79,7 @@
 </head>
 <body>
     <h1>Custom Haiku NFT - Final Size Testing</h1>
-    <div class="subtitle">Constantia • Warm Beige • Sizes: <40=27px, <50=22px, ≤60=18px, >60=16px</div>
+    <div class="subtitle">Constantia • Warm Beige • Sizes: <40=26px, <50=22px, ≤60=18px, >60=16px</div>
     
     <div class="grid" id="nftGrid"></div>
 
@@ -129,8 +129,8 @@
             
             const line2Length = lines[1].length;
             
-            // Bumped up by 2px each
-            if (line2Length < 40) return 27;
+            // Updated sizes
+            if (line2Length < 40) return 26;
             if (line2Length < 50) return 22;
             if (line2Length <= 60) return 18;
             return 16;
