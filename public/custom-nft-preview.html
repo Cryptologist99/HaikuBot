@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Custom Haiku NFT - Design Workshop</title>
+    <title>Custom Haiku NFT - Design Preview</title>
     <style>
         body {
             margin: 0;
@@ -78,61 +78,70 @@
     </style>
 </head>
 <body>
-    <h1>Custom Haiku NFT Workshop</h1>
-    <div class="subtitle">Minimalist onchain SVG generation • Click to view full size</div>
+    <h1>Custom Haiku NFT Preview</h1>
+    <div class="subtitle">Font sizes: <40=25px, <50=20px, ≤60=16px, >60=14px</div>
     
     <div class="grid" id="nftGrid"></div>
 
     <script>
-        const haiku = "Winter moon rises / Bare branches scratch at the sky / Frost claims everything";
+        // Test cases showing threshold boundaries
+        const testHaikus = [
+            {
+                text: "Moon / Rises / Night",
+                name: "6 chars → 25px"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at sky / Frost",
+                name: "28 chars → 25px"
+            },
+            {
+                text: "Morning dew gathers / On spider silk stretched between us / Brief",
+                name: "38 chars → 25px"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky above / Frost claims everything",
+                name: "41 chars → 20px"
+            },
+            {
+                text: "Morning dew gathers / On spider silk stretched between two forgotten / Brief",
+                name: "48 chars → 20px"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky above forever and always / Frost claims",
+                name: "52 chars → 16px"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky above forever and always more / Frost",
+                name: "59 chars → 16px"
+            },
+            {
+                text: "System event fires now / Cron job executes shell script subprocess background long process / Memory",
+                name: "65 chars → 14px"
+            }
+        ];
         
-        const variations = [
-            { seed: 12345, decoration: "circle", name: "Blue Gradient + Circle" },
-            { seed: 67890, decoration: "line", name: "Purple Gradient + Line" },
-            { seed: 11111, decoration: "dots", name: "Green Gradient + Dots" },
-            { seed: 99999, decoration: "none", name: "Orange Gradient + Clean" },
-            { seed: 54321, decoration: "circle", name: "Pink Gradient + Circle" },
-            { seed: 33333, decoration: "line", name: "Teal Gradient + Line" },
-            { seed: 77777, decoration: "none", name: "Yellow Gradient + Clean" },
-            { seed: 22222, decoration: "dots", name: "Lavender + Dots" }
+        // Solid background colors
+        const backgrounds = [
+            { color: "#ffffff", name: "Pure White" },
+            { color: "#f8f8f8", name: "Off White" },
+            { color: "#fffef5", name: "Cream" },
+            { color: "#fffaed", name: "Pale Yellow" }
         ];
 
-        function generateSVG(seed, decorationType) {
-            const hue = seed % 360;
-            const saturation = 40 + (seed % 30);
-            const lightness = 85 + (seed % 10);
+        function calculateFontSize(haiku) {
+            const lines = haiku.split(' / ');
+            if (lines.length < 2) return 20;
             
-            const hue2 = (hue + 30) % 360;
+            const line2Length = lines[1].length;
             
-            const gradient = `
-                <linearGradient id="bg${seed}" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:hsl(${hue}, ${saturation}%, ${lightness}%);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:hsl(${hue2}, ${saturation}%, ${lightness}%);stop-opacity:1" />
-                </linearGradient>
-            `;
-            
-            let decoration = '';
-            
-            if (decorationType === 'circle') {
-                const cx = 380 + ((seed >> 8) % 80);
-                const cy = 120 + ((seed >> 16) % 80);
-                const r = 40 + ((seed >> 4) % 30);
-                const opacity = 0.08 + ((seed % 4) / 100);
-                decoration = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#2a2a2a" opacity="${opacity}"/>`;
-            } else if (decorationType === 'line') {
-                const y = 400 + ((seed >> 8) % 50);
-                const opacity = 0.1 + ((seed % 4) / 100);
-                decoration = `<line x1="50" y1="${y}" x2="450" y2="${y}" stroke="#2a2a2a" stroke-width="2" opacity="${opacity}"/>`;
-            } else if (decorationType === 'dots') {
-                const numDots = 3 + (seed % 3);
-                decoration = '';
-                for (let i = 0; i < numDots; i++) {
-                    const cx = 50 + ((seed * (i + 1)) % 400);
-                    const cy = 50 + (((seed >> (i * 4)) % 400));
-                    const r = 3 + (seed % 3);
-                    decoration += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#2a2a2a" opacity="0.12"/>`;
-                }
-            }
+            if (line2Length < 40) return 25;
+            if (line2Length < 50) return 20;
+            if (line2Length <= 60) return 16;
+            return 14;
+        }
+
+        function generateSVG(bgColor, haiku) {
+            const fontSize = calculateFontSize(haiku);
             
             const lines = haiku.split(' / ');
             const tspans = lines.map((line, i) => 
@@ -141,10 +150,8 @@
             
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
-                    <defs>${gradient}</defs>
-                    <rect width="500" height="500" fill="url(#bg${seed})"/>
-                    ${decoration}
-                    <text x="250" y="220" font-family="Georgia, serif" font-size="18" 
+                    <rect width="500" height="500" fill="${bgColor}"/>
+                    <text x="250" y="220" font-family="Georgia, serif" font-size="${fontSize}" 
                           fill="#2a2a2a" text-anchor="middle" font-style="italic">
                         ${tspans}
                     </text>
@@ -155,31 +162,36 @@
         function renderNFTs() {
             const grid = document.getElementById('nftGrid');
             
-            variations.forEach((variant, index) => {
-                const svg = generateSVG(variant.seed, variant.decoration);
-                
-                const card = document.createElement('div');
-                card.className = 'nft-card';
-                card.innerHTML = `
-                    <div class="nft-preview">${svg}</div>
-                    <div class="nft-info">
-                        <h3>${variant.name}</h3>
-                        <div class="stat">
-                            <span class="stat-label">Seed:</span>
-                            <span class="stat-value">${variant.seed}</span>
+            testHaikus.forEach(haiku => {
+                backgrounds.slice(0, 2).forEach(bg => {
+                    const svg = generateSVG(bg.color, haiku.text);
+                    const fontSize = calculateFontSize(haiku.text);
+                    const lines = haiku.text.split(' / ');
+                    const line2Length = lines.length >= 2 ? lines[1].length : 0;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'nft-card';
+                    card.innerHTML = `
+                        <div class="nft-preview">${svg}</div>
+                        <div class="nft-info">
+                            <h3>${haiku.name}</h3>
+                            <div class="stat">
+                                <span class="stat-label">Line 2 Length:</span>
+                                <span class="stat-value">${line2Length} chars</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Font Size:</span>
+                                <span class="stat-value">${fontSize}px</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Background:</span>
+                                <span class="stat-value">${bg.name}</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <span class="stat-label">Decoration:</span>
-                            <span class="stat-value">${variant.decoration}</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Hue:</span>
-                            <span class="stat-value">${variant.seed % 360}°</span>
-                        </div>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
+                    `;
+                    
+                    grid.appendChild(card);
+                });
             });
         }
 
