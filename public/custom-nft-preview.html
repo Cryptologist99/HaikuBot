@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Custom Haiku NFT - Font Exploration</title>
+    <title>Custom Haiku NFT - Size Testing</title>
     <style>
         body {
             margin: 0;
@@ -78,47 +78,65 @@
     </style>
 </head>
 <body>
-    <h1>Custom Haiku NFT - Font Options</h1>
-    <div class="subtitle">Background: Warm Beige (#faf5e8) • Exploring classic serif fonts</div>
+    <h1>Custom Haiku NFT - Final Size Testing</h1>
+    <div class="subtitle">Constantia • Warm Beige • Sizes: <40=27px, <50=22px, ≤60=18px, >60=16px</div>
     
     <div class="grid" id="nftGrid"></div>
 
     <script>
-        // Single haiku for comparison
-        const haiku = "Winter moon rises / Bare branches scratch at the sky / Frost claims everything";
-        
-        // Background locked to Warm Beige
-        const bgColor = "#faf5e8";
-        
-        // Serif font options (web-safe for SVG)
-        const fonts = [
-            { family: "Georgia, serif", name: "Georgia (Current)" },
-            { family: "Times New Roman, Times, serif", name: "Times New Roman" },
-            { family: "Palatino, Palatino Linotype, serif", name: "Palatino" },
-            { family: "Garamond, serif", name: "Garamond" },
-            { family: "Baskerville, Baskerville Old Face, serif", name: "Baskerville" },
-            { family: "Cambria, serif", name: "Cambria" },
-            { family: "Caslon, Big Caslon, serif", name: "Caslon" },
-            { family: "Didot, Didot LT STD, serif", name: "Didot" },
-            { family: "Hoefler Text, Constantia, serif", name: "Hoefler Text" },
-            { family: "Lucida Bright, Georgia, serif", name: "Lucida Bright" },
-            { family: "Book Antiqua, Palatino, serif", name: "Book Antiqua" },
-            { family: "Constantia, Georgia, serif", name: "Constantia" }
+        // Test cases showing each threshold
+        const testHaikus = [
+            {
+                text: "Moon / Rises / Night",
+                name: "Very Short (6 chars)"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at sky / Frost",
+                name: "Short (28 chars)"
+            },
+            {
+                text: "Morning dew gathers / On spider silk stretched between us / Brief",
+                name: "38 chars (edge of 27px)"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky above / Frost claims everything",
+                name: "41 chars (22px starts)"
+            },
+            {
+                text: "Morning dew gathers / On spider silk stretched between two forgotten / Brief",
+                name: "48 chars (still 22px)"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky above forever / Frost claims",
+                name: "51 chars (18px starts)"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky above forever and always / Frost",
+                name: "58 chars (still 18px)"
+            },
+            {
+                text: "System event fires now / Cron job executes shell script subprocess background / Memory",
+                name: "61 chars (16px starts)"
+            }
         ];
+        
+        const bgColor = "#faf5e8"; // Warm Beige
+        const fontFamily = "Constantia, Georgia, serif";
 
         function calculateFontSize(haiku) {
             const lines = haiku.split(' / ');
-            if (lines.length < 2) return 20;
+            if (lines.length < 2) return 22;
             
             const line2Length = lines[1].length;
             
-            if (line2Length < 40) return 25;
-            if (line2Length < 50) return 20;
-            if (line2Length <= 60) return 16;
-            return 14;
+            // Bumped up by 2px each
+            if (line2Length < 40) return 27;
+            if (line2Length < 50) return 22;
+            if (line2Length <= 60) return 18;
+            return 16;
         }
 
-        function generateSVG(fontFamily, haiku) {
+        function generateSVG(haiku) {
             const fontSize = calculateFontSize(haiku);
             
             const lines = haiku.split(' / ');
@@ -140,27 +158,29 @@
         function renderNFTs() {
             const grid = document.getElementById('nftGrid');
             
-            fonts.forEach(font => {
-                const svg = generateSVG(font.family, haiku);
-                const fontSize = calculateFontSize(haiku);
+            testHaikus.forEach(haiku => {
+                const svg = generateSVG(haiku.text);
+                const fontSize = calculateFontSize(haiku.text);
+                const lines = haiku.text.split(' / ');
+                const line2Length = lines.length >= 2 ? lines[1].length : 0;
                 
                 const card = document.createElement('div');
                 card.className = 'nft-card';
                 card.innerHTML = `
                     <div class="nft-preview">${svg}</div>
                     <div class="nft-info">
-                        <h3>${font.name}</h3>
+                        <h3>${haiku.name}</h3>
                         <div class="stat">
-                            <span class="stat-label">Font Family:</span>
-                            <span class="stat-value">${font.family.split(',')[0]}</span>
+                            <span class="stat-label">Line 2 Length:</span>
+                            <span class="stat-value">${line2Length} chars</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-label">Size:</span>
+                            <span class="stat-label">Font Size:</span>
                             <span class="stat-value">${fontSize}px</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-label">Background:</span>
-                            <span class="stat-value">Warm Beige</span>
+                            <span class="stat-label">Fits?</span>
+                            <span class="stat-value">Check preview</span>
                         </div>
                     </div>
                 `;
