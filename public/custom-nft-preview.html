@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Custom Haiku NFT - Design Preview</title>
+    <title>Custom Haiku NFT - Font Exploration</title>
     <style>
         body {
             margin: 0;
@@ -78,62 +78,32 @@
     </style>
 </head>
 <body>
-    <h1>Custom Haiku NFT - Color Exploration</h1>
-    <div class="subtitle">Font sizes: <40=25px, <50=20px, ≤60=16px, >60=14px • Whites to Greys to Yellows</div>
+    <h1>Custom Haiku NFT - Font Options</h1>
+    <div class="subtitle">Background: Warm Beige (#faf5e8) • Exploring classic serif fonts</div>
     
     <div class="grid" id="nftGrid"></div>
 
     <script>
-        // Single medium-length haiku to showcase colors
+        // Single haiku for comparison
         const haiku = "Winter moon rises / Bare branches scratch at the sky / Frost claims everything";
         
-        // Expanded color palette: whites → greys → yellows
-        const backgrounds = [
-            // Pure Whites
-            { color: "#ffffff", name: "Pure White" },
-            { color: "#fefefe", name: "Snow" },
-            { color: "#fafafa", name: "Ghost White" },
-            
-            // Off-Whites
-            { color: "#f8f8f8", name: "Off White" },
-            { color: "#f5f5f5", name: "Smoke" },
-            { color: "#f2f2f2", name: "Alabaster" },
-            
-            // Light Greys
-            { color: "#f0f0f0", name: "Light Grey" },
-            { color: "#eeeeee", name: "Platinum" },
-            { color: "#e8e8e8", name: "Silver" },
-            { color: "#e0e0e0", name: "Gainsboro" },
-            
-            // Medium Greys
-            { color: "#d8d8d8", name: "Medium Grey" },
-            { color: "#d0d0d0", name: "Concrete" },
-            { color: "#c8c8c8", name: "Ash" },
-            { color: "#c0c0c0", name: "Stone" },
-            
-            // Warm Whites/Creams
-            { color: "#fffef5", name: "Cream" },
-            { color: "#fffdf7", name: "Ivory" },
-            { color: "#fffcf0", name: "Linen" },
-            { color: "#fffaeb", name: "Vanilla" },
-            
-            // Pale Yellows
-            { color: "#fffaed", name: "Pale Yellow" },
-            { color: "#fff9e6", name: "Champagne" },
-            { color: "#fff8e1", name: "Light Cream" },
-            { color: "#fff7dc", name: "Cornsilk" },
-            
-            // Light Beiges
-            { color: "#faf5e8", name: "Warm Beige" },
-            { color: "#f8f4e6", name: "Eggshell" },
-            { color: "#f5f0e6", name: "Light Tan" },
-            { color: "#f2ede3", name: "Sand" },
-            
-            // Deeper Yellows/Tans
-            { color: "#eee8dc", name: "Parchment" },
-            { color: "#ebe5d8", name: "Wheat" },
-            { color: "#e8e2d5", name: "Latte" },
-            { color: "#e5dfd2", name: "Biscuit" }
+        // Background locked to Warm Beige
+        const bgColor = "#faf5e8";
+        
+        // Serif font options (web-safe for SVG)
+        const fonts = [
+            { family: "Georgia, serif", name: "Georgia (Current)" },
+            { family: "Times New Roman, Times, serif", name: "Times New Roman" },
+            { family: "Palatino, Palatino Linotype, serif", name: "Palatino" },
+            { family: "Garamond, serif", name: "Garamond" },
+            { family: "Baskerville, Baskerville Old Face, serif", name: "Baskerville" },
+            { family: "Cambria, serif", name: "Cambria" },
+            { family: "Caslon, Big Caslon, serif", name: "Caslon" },
+            { family: "Didot, Didot LT STD, serif", name: "Didot" },
+            { family: "Hoefler Text, Constantia, serif", name: "Hoefler Text" },
+            { family: "Lucida Bright, Georgia, serif", name: "Lucida Bright" },
+            { family: "Book Antiqua, Palatino, serif", name: "Book Antiqua" },
+            { family: "Constantia, Georgia, serif", name: "Constantia" }
         ];
 
         function calculateFontSize(haiku) {
@@ -148,7 +118,7 @@
             return 14;
         }
 
-        function generateSVG(bgColor, haiku) {
+        function generateSVG(fontFamily, haiku) {
             const fontSize = calculateFontSize(haiku);
             
             const lines = haiku.split(' / ');
@@ -159,7 +129,7 @@
             return `
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
                     <rect width="500" height="500" fill="${bgColor}"/>
-                    <text x="250" y="220" font-family="Georgia, serif" font-size="${fontSize}" 
+                    <text x="250" y="220" font-family="${fontFamily}" font-size="${fontSize}" 
                           fill="#2a2a2a" text-anchor="middle" font-style="italic">
                         ${tspans}
                     </text>
@@ -170,25 +140,27 @@
         function renderNFTs() {
             const grid = document.getElementById('nftGrid');
             
-            backgrounds.forEach(bg => {
-                const svg = generateSVG(bg.color, haiku);
+            fonts.forEach(font => {
+                const svg = generateSVG(font.family, haiku);
                 const fontSize = calculateFontSize(haiku);
-                const lines = haiku.split(' / ');
-                const line2Length = lines.length >= 2 ? lines[1].length : 0;
                 
                 const card = document.createElement('div');
                 card.className = 'nft-card';
                 card.innerHTML = `
                     <div class="nft-preview">${svg}</div>
                     <div class="nft-info">
-                        <h3>${bg.name}</h3>
+                        <h3>${font.name}</h3>
                         <div class="stat">
-                            <span class="stat-label">Color:</span>
-                            <span class="stat-value">${bg.color}</span>
+                            <span class="stat-label">Font Family:</span>
+                            <span class="stat-value">${font.family.split(',')[0]}</span>
                         </div>
                         <div class="stat">
-                            <span class="stat-label">Font:</span>
+                            <span class="stat-label">Size:</span>
                             <span class="stat-value">${fontSize}px</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Background:</span>
+                            <span class="stat-value">Warm Beige</span>
                         </div>
                     </div>
                 `;
