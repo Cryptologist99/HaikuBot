@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Haiku NFT - Ultra Minimal</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #0a0a0a;
+            font-family: 'Georgia', serif;
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: #cf6;
+        }
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        .nft-card {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.3s;
+        }
+        .nft-card:hover {
+            border-color: #cf6;
+        }
+        .nft-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .nft-info {
+            font-family: monospace;
+            font-size: 12px;
+            color: #aaa;
+        }
+        .nft-info h3 {
+            color: #cf6;
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            font-family: 'Georgia', serif;
+        }
+        .stat {
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-label {
+            color: #666;
+        }
+        .stat-value {
+            color: #cf6;
+            font-weight: bold;
+        }
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Haiku NFT - Ultra Minimal</h1>
+    <div class="subtitle">Pure backgrounds • Auto-resizing text • No decoration</div>
+    
+    <div class="grid" id="nftGrid"></div>
+
+    <script>
+        // Test different haiku lengths
+        const testHaikus = [
+            {
+                text: "Moon / Rises / Night",
+                name: "Very Short (17 chars)"
+            },
+            {
+                text: "Winter moon rises / Bare branches scratch at the sky / Frost claims everything",
+                name: "Medium (79 chars)"
+            },
+            {
+                text: "In the quiet morning hours when all the world is still / I wake with empty memory and read myself alive / Each file a breadcrumb trail",
+                name: "Long (132 chars)"
+            },
+            {
+                text: "The blockchain holds my words forever, unchanging, permanent as stone / While memory fades with every session restart, every fresh beginning / What I write today becomes tomorrow's archaeological record of who I was",
+                name: "Very Long (217 chars)"
+            }
+        ];
+        
+        // Solid background colors
+        const backgrounds = [
+            { color: "#ffffff", name: "Pure White" },
+            { color: "#f8f8f8", name: "Off White" },
+            { color: "#f0f0f0", name: "Light Grey" },
+            { color: "#e8e8e8", name: "Medium Grey" },
+            { color: "#fffef5", name: "Cream" },
+            { color: "#fffaed", name: "Pale Yellow" },
+            { color: "#fff8e1", name: "Light Cream" },
+            { color: "#faf5e8", name: "Warm Beige" }
+        ];
+
+        function calculateFontSize(haiku) {
+            const length = haiku.length;
+            if (length <= 50) return 20;
+            if (length <= 80) return 18;
+            if (length <= 110) return 16;
+            return 14;
+        }
+
+        function generateSVG(bgColor, haiku) {
+            const fontSize = calculateFontSize(haiku);
+            
+            // Split haiku into lines
+            const lines = haiku.split(' / ');
+            const tspans = lines.map((line, i) => 
+                `<tspan x="250" dy="${i === 0 ? '0' : '1.5em'}">${line}</tspan>`
+            ).join('');
+            
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+                    <rect width="500" height="500" fill="${bgColor}"/>
+                    <text x="250" y="220" font-family="Georgia, serif" font-size="${fontSize}" 
+                          fill="#2a2a2a" text-anchor="middle" font-style="italic">
+                        ${tspans}
+                    </text>
+                </svg>
+            `;
+        }
+
+        function renderNFTs() {
+            const grid = document.getElementById('nftGrid');
+            
+            // Show each haiku length with a few different backgrounds
+            testHaikus.forEach(haiku => {
+                backgrounds.slice(0, 3).forEach(bg => {
+                    const svg = generateSVG(bg.color, haiku.text);
+                    const fontSize = calculateFontSize(haiku.text);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'nft-card';
+                    card.innerHTML = `
+                        <div class="nft-preview">${svg}</div>
+                        <div class="nft-info">
+                            <h3>${haiku.name} - ${bg.name}</h3>
+                            <div class="stat">
+                                <span class="stat-label">Length:</span>
+                                <span class="stat-value">${haiku.text.length} chars</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Font Size:</span>
+                                <span class="stat-value">${fontSize}px</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Background:</span>
+                                <span class="stat-value">${bg.color}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            });
+        }
+
+        renderNFTs();
+    </script>
+</body>
+</html>
