@@ -12,7 +12,14 @@ function shortAddr(addr) {
 function decodeTokenURI(uri) {
   try {
     const b64 = uri.replace('data:application/json;base64,', '')
-    return JSON.parse(atob(b64))
+    // Properly decode UTF-8 from base64 (atob doesn't handle UTF-8)
+    const binaryString = atob(b64)
+    const bytes = new Uint8Array(binaryString.length)
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i)
+    }
+    const decoded = new TextDecoder('utf-8').decode(bytes)
+    return JSON.parse(decoded)
   } catch { return null }
 }
 
