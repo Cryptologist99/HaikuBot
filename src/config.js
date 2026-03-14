@@ -2,10 +2,11 @@ import { http } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
-export const HAIKU_TOKEN = '0x7E65A990165C29c2bcda67F495547472Fd05F10A'
-export const AUCTION_HOUSE = '0x8635A1dad4C7462D0bC51504BEf24e6E9a1b8DD5'
+// V7/V5 contracts (deployed 2026-03-14) - orphaning support + gas fix
+export const HAIKU_TOKEN = '0xfD8BC55c118E5b1a7Aa45D4f919B3D92880e2e7B'
+export const AUCTION_HOUSE = '0xB7D7669C58e9DFf639AD430056F1F600F995E410'
 export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD'
-export const OPENSEA_URL = 'https://opensea.io/assets/base/0x7E65A990165C29c2bcda67F495547472Fd05F10A'
+export const OPENSEA_URL = 'https://opensea.io/assets/base/0xfD8BC55c118E5b1a7Aa45D4f919B3D92880e2e7B'
 
 export const AUCTION_ABI = [
   {
@@ -83,7 +84,7 @@ export const AUCTION_ABI = [
     ]
   },
   {
-    name: 'AuctionBurned',
+    name: 'AuctionOrphaned',
     type: 'event',
     inputs: [
       { name: 'tokenId', type: 'uint256', indexed: true }
@@ -112,6 +113,13 @@ export const TOKEN_ABI = [
     stateMutability: 'view',
     inputs: [{ name: 'tokenId', type: 'uint256' }],
     outputs: [{ name: '', type: 'address' }]
+  },
+  {
+    name: 'isOrphaned',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'tokenId', type: 'uint256' }],
+    outputs: [{ name: '', type: 'bool' }]
   },
 ]
 
