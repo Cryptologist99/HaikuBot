@@ -2,11 +2,11 @@ import { http } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
-// V7/V5 contracts (deployed 2026-03-14) - orphaning support + gas fix
-export const HAIKU_TOKEN = '0xfD8BC55c118E5b1a7Aa45D4f919B3D92880e2e7B'
-export const AUCTION_HOUSE = '0xB7D7669C58e9DFf639AD430056F1F600F995E410'
+// V7.1/V5 contracts (deployed 2026-03-14) - orphaning fix
+export const HAIKU_TOKEN = '0x99fCAf98CB4Af25115f03B98723364E41234B745'
+export const AUCTION_HOUSE = '0x04Ba2136E719Aae82C864684E8F59Cd88C210BFc'
 export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD'
-export const OPENSEA_URL = 'https://opensea.io/assets/base/0xfD8BC55c118E5b1a7Aa45D4f919B3D92880e2e7B'
+export const OPENSEA_URL = 'https://opensea.io/assets/base/0x99fCAf98CB4Af25115f03B98723364E41234B745'
 
 export const AUCTION_ABI = [
   {
