@@ -2,11 +2,11 @@ import { http } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
-// V7.1/V5 contracts (deployed 2026-03-14) - orphaning fix
-export const HAIKU_TOKEN = '0x99fCAf98CB4Af25115f03B98723364E41234B745'
-export const AUCTION_HOUSE = '0x04Ba2136E719Aae82C864684E8F59Cd88C210BFc'
+// V8/V6 contracts (deployed 2026-03-14) - JSON escaping + refund griefing fix
+export const HAIKU_TOKEN = '0x5dB7d31fbE1d04eC4280032F5f9d6Eb9986Bcd7e'
+export const AUCTION_HOUSE = '0xBb788dd89dAb73183195cCeCbDdA1B0e84aCFB7b'
 export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD'
-export const OPENSEA_URL = 'https://opensea.io/assets/base/0x99fCAf98CB4Af25115f03B98723364E41234B745'
+export const OPENSEA_URL = 'https://opensea.io/assets/base/0x5dB7d31fbE1d04eC4280032F5f9d6Eb9986Bcd7e'
 
 export const AUCTION_ABI = [
   {
@@ -89,6 +89,35 @@ export const AUCTION_ABI = [
     inputs: [
       { name: 'tokenId', type: 'uint256', indexed: true }
     ]
+  },
+  {
+    name: 'RefundFailed',
+    type: 'event',
+    inputs: [
+      { name: 'bidder', type: 'address', indexed: true },
+      { name: 'amount', type: 'uint256' }
+    ]
+  },
+  {
+    name: 'pendingReturns',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'bidder', type: 'address' }],
+    outputs: [{ type: 'uint256' }]
+  },
+  {
+    name: 'withdrawRefund',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [],
+    outputs: []
+  },
+  {
+    name: 'auctionRecipient',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ type: 'address' }]
   },
 ]
 
