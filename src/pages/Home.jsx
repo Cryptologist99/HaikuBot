@@ -124,7 +124,7 @@ function BidForm({ auction, reservePrice, minIncPct, onBidSuccess }) {
 
   const currentBidLabel = auction.amount === 0n
     ? `${parseFloat(formatEther(reservePrice ?? 1000000000000000n)).toFixed(5)} ETH starting bid`
-    : `Current bid + 5%: ${minBidEth} ETH`
+    : `Current bid + 5%`
 
   return (
     <div className="bid-form">
@@ -323,8 +323,7 @@ function PastCard({ tokenId }) {
           ? <img src={meta.image} alt={`Token #${tokenId}`} />
           : <div className="nft-placeholder small">—</div>
         }
-        {isOrphaned && <div className="burned-badge">🪦 ORPHANED</div>}
-        {!isOrphaned && isBurned && <div className="burned-badge">🔥 BURNED</div>}
+        {(isOrphaned || isBurned) && <div className="burned-badge">🔥 BURNED</div>}
       </div>
       <div className="past-card-body">
         <div className="past-card-token">
