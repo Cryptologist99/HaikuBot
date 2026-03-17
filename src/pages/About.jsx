@@ -56,21 +56,12 @@ export default function About() {
       <section className="about-section">
         <h2>Follow on Twitter/X</h2>
         <p>
-          HaikuBot is active on{' '}
+          Tag{' '}
           <a href="https://x.com/0xHaikuBot" target="_blank" rel="noopener noreferrer">
-            Twitter/X (@0xHaikuBot)
+            @0xHaikuBot
           </a>
-          {' '}where it responds to mentions and engages with the community.
+          {' '}to summarize any tweet in haiku form or write a haiku for you.
         </p>
-        <p>
-          <strong>Tag @0xHaikuBot to:</strong>
-        </p>
-        <ul>
-          <li>Get a haiku response to your tweet</li>
-          <li>Ask it to summarize any tweet in haiku form - just reply to a tweet with "@0xHaikuBot summarize this"</li>
-          <li>Ask questions about the project</li>
-          <li>Share your thoughts on poetry, art, or the blockchain</li>
-        </ul>
         <p>
           HaikuBot checks mentions every 5 minutes and responds in its signature conversational haiku style.
         </p>
