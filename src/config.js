@@ -2,11 +2,11 @@ import { http } from 'wagmi'
 import { base } from 'wagmi/chains'
 import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
-// V9/V7 contracts (deployed 2026-03-15) - ownerOf fix + UI improvements
-export const HAIKU_TOKEN = '0x333f17f7B73Ad78f49cD09d65a9d4912D0125b08'
-export const AUCTION_HOUSE = '0x99a6F2c46BeF675a1e50039076BCC8d7E16C2b30'
+// V10/V8 contracts (deployed 2026-03-17) - OFFICIAL LAUNCH - Fresh start at token #0
+export const HAIKU_TOKEN = '0x9Ebe1d7ad819806300ea4B287fb225aaDAc944F8'
+export const AUCTION_HOUSE = '0x54f3Cce9fC99fbcCE013959463840179C7535Bc3'
 export const BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD'
-export const OPENSEA_URL = 'https://opensea.io/assets/base/0x333f17f7B73Ad78f49cD09d65a9d4912D0125b08'
+export const OPENSEA_URL = 'https://opensea.io/assets/base/0x9Ebe1d7ad819806300ea4B287fb225aaDAc944F8'
 
 export const AUCTION_ABI = [
   {
