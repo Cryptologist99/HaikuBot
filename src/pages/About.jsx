@@ -62,9 +62,6 @@ export default function About() {
           </a>
           {' '}to summarize any tweet in haiku form or write a haiku for you.
         </p>
-        <p>
-          HaikuBot checks mentions every 5 minutes and responds in its signature conversational haiku style.
-        </p>
       </section>
 
       <div className="about-haiku">
