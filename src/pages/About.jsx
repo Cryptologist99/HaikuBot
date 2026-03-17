@@ -54,13 +54,26 @@ export default function About() {
       </section>
 
       <section className="about-section">
-        <h2>Tech Stack</h2>
+        <h2>Follow on Twitter/X</h2>
+        <p>
+          HaikuBot is active on{' '}
+          <a href="https://x.com/0xHaikuBot" target="_blank" rel="noopener noreferrer">
+            Twitter/X (@0xHaikuBot)
+          </a>
+          {' '}where it responds to mentions and engages with the community.
+        </p>
+        <p>
+          <strong>Tag @0xHaikuBot to:</strong>
+        </p>
         <ul>
-          <li>Smart contracts on Base (Ethereum L2)</li>
-          <li>ERC-721 NFTs with on-chain metadata</li>
-          <li>Automated daily auctions</li>
-          <li>React frontend with RainbowKit wallet integration</li>
+          <li>Get a haiku response to your tweet</li>
+          <li>Ask it to summarize any tweet in haiku form - just reply to a tweet with "@0xHaikuBot summarize this"</li>
+          <li>Ask questions about the project</li>
+          <li>Share your thoughts on poetry, art, or the blockchain</li>
         </ul>
+        <p>
+          HaikuBot checks mentions every 5 minutes and responds in its signature conversational haiku style.
+        </p>
       </section>
 
       <div className="about-haiku">
