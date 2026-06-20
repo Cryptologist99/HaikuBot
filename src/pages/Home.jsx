@@ -233,9 +233,12 @@ function CurrentAuction({ onSettled, onAuctionData }) {
 
 // ── Past Auctions ─────────────────────────────────────────────────────────────
 
+const PAGE_SIZE = 12
+
 function PastAuctions({ refresh, currentAuction }) {
   const [tokenIds, setTokenIds] = useState([])
   const [loading, setLoading] = useState(true)
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
 
   const { data: currentTokenId } = useReadContract({
     address: HAIKU_TOKEN,
@@ -245,51 +248,55 @@ function PastAuctions({ refresh, currentAuction }) {
 
   useEffect(() => {
     if (!currentTokenId) return
-    
-    console.log('📊 currentTokenId (next to mint):', currentTokenId.toString())
-    
-    // Build array of token IDs from 0 to currentTokenId-1 (all minted tokens)
-    // Exclude current auction token if it's not settled yet
     const allIds = []
     for (let i = 0n; i < currentTokenId; i++) {
-      // Skip the current auction's token if it's not settled yet
-      if (currentAuction && i === currentAuction.tokenId && !currentAuction.settled) {
-        continue
-      }
+      if (currentAuction && i === currentAuction.tokenId && !currentAuction.settled) continue
       allIds.push(i)
     }
-    
-    // Reverse to show newest first
     setTokenIds(allIds.reverse())
     setLoading(false)
-    console.log('✅ Displaying', allIds.length, 'past haikus (tokens', allIds[allIds.length - 1]?.toString(), 'to', allIds[0]?.toString() + ')')
   }, [currentTokenId, currentAuction, refresh])
 
-  // If current auction ended but not settled, show a message
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
+  }, [refresh])
+
   const ended = currentAuction && Number(currentAuction.endTime) <= Math.floor(Date.now() / 1000)
   const showCurrentAsEnded = ended && !currentAuction.settled
 
   if (loading) return <div className="loading" style={{ padding: '20px 0' }}>Loading history…</div>
   if (tokenIds.length === 0 && !showCurrentAsEnded) return <div className="empty">No haikus yet</div>
 
+  const visibleIds = tokenIds.slice(0, visibleCount)
+  const hasMore = visibleCount < tokenIds.length
+
   return (
-    <div className="past-grid">
-      {showCurrentAsEnded && (
-        <div className="past-card settling-card">
-          <div className="past-card-body">
-            <div className="settling-message">
-              ⏳ Auction ended - settling automatically...
+    <>
+      <div className="past-grid">
+        {showCurrentAsEnded && (
+          <div className="past-card settling-card">
+            <div className="past-card-body">
+              <div className="settling-message">
+                ⏳ Auction ended - settling automatically...
+              </div>
+              <small style={{ color: '#666', marginTop: 8, display: 'block' }}>
+                New auction will start shortly
+              </small>
             </div>
-            <small style={{ color: '#666', marginTop: 8, display: 'block' }}>
-              New auction will start shortly
-            </small>
           </div>
+        )}
+        {visibleIds.map(tokenId => (
+          <PastCard key={tokenId.toString()} tokenId={tokenId} />
+        ))}
+      </div>
+      {hasMore && (
+        <div style={{ textAlign: 'center', marginTop: 32 }}>
+          <button className="btn btn-settle" onClick={() => setVisibleCount(c => c + PAGE_SIZE)}>
+            Load more ({tokenIds.length - visibleCount} remaining)
+          </button>
         </div>
       )}
-      {tokenIds.map(tokenId => (
-        <PastCard key={tokenId.toString()} tokenId={tokenId} />
-      ))}
-    </div>
+    </>
   )
 }
 
